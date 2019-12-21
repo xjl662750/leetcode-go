@@ -1,7 +1,3 @@
-import (
-	"strconv"
-)
-
 /*
  * @lc app=leetcode.cn id=10 lang=golang
  *
@@ -79,50 +75,74 @@ import (
 
 // @lc code=start
 //方法 1：回溯
-// func isMatch(s string, p string) bool {
-// 	// fmt.Println(p)
-// 	if p == "" {
-// 		return len(s) == 0
-// 	}
-// 	firstMatch := s != "" && (p[0] == '.' || s[0] == p[0])
-// 	if len(p) >= 2 && p[1] == '*' {
-// 		// fmt.Println(p[2:])
-// 		return isMatch(s, p[2:]) || (firstMatch && isMatch(s[1:], p))
-// 	} else {
-// 		return firstMatch && isMatch(s[1:], p[1:])
-// 	}
-// 	return true
-// }
-//方法 2: 动态规划
-//自顶向下的方法
-var memo map[string]bool
-
 func isMatch(s string, p string) bool {
-	memo = make(map[string]bool)
-	return dp(0, 0, s, p)
-}
-
-func dp(i, j int, s string, p string) bool {
-	z := strconv.Itoa(i) + strconv.Itoa(j)
-	if x, isExist := memo[z]; isExist {
-		return x == true
+	// fmt.Println(p)
+	if p == "" {
+		return len(s) == 0
 	}
-	var ans bool
-	if j == len(p) {
-		ans = i == len(s)
+	firstMatch := s != "" && (p[0] == '.' || s[0] == p[0])
+	if len(p) >= 2 && p[1] == '*' {
+		// fmt.Println(p[2:])
+		return isMatch(s, p[2:]) || (firstMatch && isMatch(s[1:], p))
 	} else {
-		firstMatch := i < len(s) && (p[j] == '.' || s[i] == p[j])
-
-		if j+1 < len(p) && p[j+1] == '*' {
-			ans = (dp(i, j+2, s, p) ||
-				firstMatch && dp(i+1, j, s, p))
-		} else {
-			ans = firstMatch && dp(i+1, j+1, s, p)
-		}
+		return firstMatch && isMatch(s[1:], p[1:])
 	}
-	memo[z] = ans
-
-	return ans
+	return true
 }
+
+// //方法 2: 动态规划
+// //自顶向下的方法
+// var memo map[string]bool
+
+// func isMatch(s string, p string) bool {
+// 	memo = make(map[string]bool)
+// 	return dp(0, 0, s, p)
+// }
+
+// func dp(i, j int, s string, p string) bool {
+// 	z := strconv.Itoa(i) + "," + strconv.Itoa(j)
+// 	if x, isExist := memo[z]; isExist {
+// 		return x == true
+// 	}
+// 	var ans bool
+// 	if j == len(p) {
+// 		ans = i == len(s)
+// 	} else {
+// 		firstMatch := i < len(s) && (p[j] == '.' || s[i] == p[j])
+
+// 		if j+1 < len(p) && p[j+1] == '*' {
+// 			ans = (dp(i, j+2, s, p) ||
+// 				firstMatch && dp(i+1, j, s, p))
+// 		} else {
+// 			ans = firstMatch && dp(i+1, j+1, s, p)
+// 		}
+// 	}
+// 	memo[z] = ans
+
+// 	return ans
+// }
+
+// //自底向上的方法
+// var memo map[string]bool
+
+// func isMatch(s string, p string) bool {
+// 	memo = make(map[string]bool)
+// 	memo[getKey(len(s), len(p))] = true
+
+// 	for i := len(s); i >= 0; i-- {
+// 		for j := len(p) - 1; j >= 0; j-- {
+// 			firstMatch := i < len(s) && (p[j] == '.' || s[i] == p[j])
+// 			if j+1 < len(p) && p[j+1] == '*' {
+// 				memo[getKey(i, j)] = memo[getKey(i, j+2)] || firstMatch && memo[getKey(i+1, j)]
+// 			} else {
+// 				memo[getKey(i, j)] = firstMatch && memo[getKey(i+1, j+1)]
+// 			}
+// 		}
+// 	}
+// 	return memo["0,0"]
+// }
+// func getKey(i, j int) string {
+// 	return strconv.Itoa(i) + "," + strconv.Itoa(j)
+// }
 
 // @lc code=end
